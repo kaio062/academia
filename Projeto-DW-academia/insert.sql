@@ -104,7 +104,7 @@ INSERT INTO exercicio_treino (exercicio_id, treino_id) VALUES
 (2, 1),
 (3, 1),
 (6, 1),
-(1, 1), -- repetido intencional no original (mantido opcionalmente); pode remover se necessário
+(1, 2), 
 (3, 2),
 (4, 2),
 (5, 2),
