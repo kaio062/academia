@@ -2,11 +2,6 @@
 session_start();
 require_once 'conexao.php';
 
-// Verifica se o admin está logado (se houver controle de sessão)
-if (!isset($_SESSION["admin"])) {
-    // header("Location: login.php");
-    // exit;
-}
 
 // Consulta todos os exercícios
 $sql = "SELECT * FROM exercicio ORDER BY id_exercicio DESC";
