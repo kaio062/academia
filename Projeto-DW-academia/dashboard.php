@@ -110,407 +110,466 @@ $usuarionmtreino = mysqli_fetch_assoc($resultadonmtreino);
 <head>
     <meta charset="UTF-8">
     <title>Dashboard - Painel do Administrador</title>
-    <style>
-        /* === Estilo Base === */
-        :root {
-            --bg-color: #0a0a0a;
-            --primary-color: #39ff14;
-            --primary-light: #0aff9d;
-            --text-color: #e5e5e5;
-            --text-secondary: #8a8a8a;
-            --card-bg: #111111;
-            --card-shadow: rgba(0, 255, 136, 0.15);
-            --radius: 14px;
-        }
+<style>/* === 🎯 VARIÁVEIS DE TEMA === */
+:root {
+    --bg-color: #0a0a0a;
+    --sidebar-bg: #0d0d0d;
+    --card-bg: #111111;
+    --primary-color: #00ff88;
+    --primary-glow: #00ff88cc;
+    --accent-color: #0aff9d;
+    --text-color: #e5e5e5;
+    --text-secondary: #8a8a8a;
+    --hover-bg: rgba(0, 255, 136, 0.08);
+    --border-color: rgba(0, 255, 136, 0.15);
+    --radius: 14px;
+    --shadow-glow: 0 0 18px rgba(0, 255, 136, 0.15);
+    --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-        body {
-            font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-        }
+/* === 🌙 BASE === */
+body {
+    font-family: "Poppins", "Segoe UI", Arial, sans-serif;
+    background: radial-gradient(circle at top left, #090909, #000);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
 
-        .container {
-            width: 92%;
-            max-width: 1200px;
-            margin: 40px auto;
-        }
+/* Barra de rolagem estilizada */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-track {
+    background: #0f0f0f;
+}
 
-        /* === Cabeçalho === */
-        .dashboard-header {
-            text-align: center;
-            margin-bottom: 40px;
-            animation: fadeInDown 0.6s ease;
-        }
+/* === 🧭 SIDEBAR === */
+.sidebar {
+    width: 250px;
+    background: linear-gradient(180deg, #0d0d0d, #080808);
+    box-shadow: inset -1px 0 0 var(--border-color), var(--shadow-glow);
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    transition: var(--transition);
+    z-index: 100;
+    backdrop-filter: blur(6px);
+}
 
-        .dashboard-header h1 {
-            margin: 0;
-            font-size: 2.2em;
-            font-weight: 700;
-            color: var(--primary-color);
-            letter-spacing: -0.5px;
-            text-shadow: 0 0 10px var(--primary-color);
-        }
+.sidebar.collapsed {
+    width: 85px;
+}
 
-        .dashboard-header p {
-            color: var(--text-secondary);
-            margin-top: 10px;
-            font-size: 1em;
-        }
+/* Cabeçalho */
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 24px 18px;
+    color: var(--primary-color);
+    font-weight: 700;
+    font-size: 1.4em;
+    text-shadow: 0 0 12px var(--primary-color);
+    letter-spacing: -0.5px;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--border-color);
+}
 
+/* === MENU === */
+.menu {
+    list-style: none;
+    padding: 25px 0;
+    margin: 0;
+    flex: 1;
+    overflow-y: auto;
+}
 
+.menu li {
+    margin: 6px 0;
+}
 
-        /* === Cards === */
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-bottom: 40px;
-            justify-content: center;
-        }
+.menu a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 24px;
+    color: var(--text-color);
+    text-decoration: none;
+    border-radius: 10px;
+    transition: var(--transition);
+    position: relative;
+    font-weight: 500;
+}
 
-        .card {
-            background: var(--card-bg);
-            border-radius: var(--radius);
-            box-shadow: 0 4px 20px var(--card-shadow);
-            padding: 25px;
-            flex: 1;
-            min-width: 230px;
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
+.menu a span {
+    font-size: 1.4em;
+    min-width: 36px;
+    text-align: center;
+}
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
-        }
+.menu a:hover {
+    background: var(--hover-bg);
+    color: var(--primary-color);
+    box-shadow: 0 0 16px rgba(0, 255, 136, 0.25);
+    transform: translateX(6px);
+}
 
-        .card h5 {
-            color: var(--text-secondary);
-            font-weight: 500;
-            margin-bottom: 8px;
-            font-size: 0.95em;
-        }
+.menu a.active {
+    background: rgba(0, 255, 136, 0.12);
+    color: var(--primary-color);
+    box-shadow: inset 3px 0 0 var(--primary-color);
+}
 
-        .card h2 {
-            color: var(--primary-color);
-            font-size: 2em;
-            font-weight: 700;
-            margin: 0;
-            text-shadow: 0 0 10px var(--primary-color);
-        }
+/* Seções do menu */
+.menu h4 {
+    color: var(--primary-color);
+    font-size: 0.9em;
+    margin: 12px 0;
+    text-align: center;
+    letter-spacing: 0.5px;
+    opacity: 0.85;
+    text-shadow: 0 0 6px var(--primary-glow);
+    transition: var(--transition);
+}
 
-        /* === Alert === */
-        .alert {
-            background: rgba(0, 255, 136, 0.1);
-            border-left: 5px solid var(--primary-color);
-            color: var(--primary-color);
-            padding: 18px;
-            text-align: center;
-            border-radius: var(--radius);
-            margin-bottom: 40px;
-            font-weight: 500;
-            box-shadow: 0 0 10px rgba(0, 255, 136, 0.15);
-            animation: fadeIn 0.8s ease;
-        }
+hr {
+    border: none;
+    height: 1px;
+    background: var(--border-color);
+    margin: 14px 20px;
+}
 
-        /* === Tabelas === */
-        .card-header {
-            background: linear-gradient(90deg, #003321, #00ff88);
-            color: white;
-            padding: 14px;
-            border-radius: var(--radius) var(--radius) 0 0;
-            font-weight: 600;
-            text-align: left;
-            letter-spacing: 0.3px;
-            text-shadow: 0 0 8px var(--primary-color);
-        }
+/* Botão de recolher */
+.toggle-btn {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-size: 1.5em;
+    cursor: pointer;
+    padding: 16px;
+    transition: transform 0.4s ease;
+}
 
-        .card-body {
-            background: var(--card-bg);
-            border-radius: 0 0 var(--radius) var(--radius);
-            padding: 20px;
-        }
+.toggle-btn:hover {
+    transform: rotate(90deg) scale(1.2);
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            font-size: 0.95em;
-        }
+/* Sidebar recolhida */
+.sidebar.collapsed .menu p,
+.sidebar.collapsed .menu h4,
+.sidebar.collapsed .sidebar-header .titulo {
+    opacity: 0;
+    transform: translateX(-15px);
+    pointer-events: none;
+}
 
-        table th,
-        table td {
-            padding: 12px 10px;
-            border-bottom: 1px solid #1a1a1a;
-            text-align: center;
-        }
+.sidebar.collapsed .menu a {
+    justify-content: center;
+}
 
-        table th {
-            background-color: #0f0f0f;
-            color: var(--primary-color);
-            text-transform: uppercase;
-            font-size: 0.85em;
-            letter-spacing: 0.5px;
-        }
+.sidebar.collapsed .menu span {
+    margin: 0 auto;
+}
 
-        table tr:hover {
-            background-color: rgba(0, 255, 136, 0.05);
-            transition: 0.2s;
-        }
+/* === 🏋️ CONTEÚDO PRINCIPAL === */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 50px auto 50px 280px;
+    transition: var(--transition);
+}
 
-        /* === Animações === */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
+.sidebar.collapsed ~ .container {
+    margin-left: 110px;
+}
+.sidebar-tooltip {
+    position: fixed;
+    background: rgba(0, 255, 136, 0.15);
+    color: var(--primary-color);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.85em;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.25);
+    pointer-events: none;
+    animation: fadeIn 0.2s ease;
+    z-index: 999;
+}
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+/* === CABEÇALHO === */
+.dashboard-header {
+    text-align: center;
+    margin-bottom: 40px;
+    animation: fadeInDown 0.6s ease;
+}
 
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
+.dashboard-header h1 {
+    margin: 0;
+    font-size: 2.4em;
+    font-weight: 700;
+    color: var(--primary-color);
+    letter-spacing: -0.5px;
+    text-shadow: 0 0 15px var(--primary-color);
+}
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+.dashboard-header p {
+    color: var(--text-secondary);
+    margin-top: 8px;
+    font-size: 1em;
+}
 
-        /* === Responsivo === */
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 80px;
-            }
+/* === 📊 CARDS === */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 22px;
+    justify-content: center;
+    margin-bottom: 50px;
+}
 
-            .sidebar.collapsed {
-                width: 0;
-            }
+.card {
+    background: linear-gradient(145deg, #101010, #0b0b0b);
+    border-radius: var(--radius);
+    box-shadow: 0 6px 25px var(--card-shadow);
+    padding: 28px;
+    min-width: 240px;
+    flex: 1;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    border: 1px solid transparent;
+}
 
-            .container {
-                margin-left: 90px;
-            }
+.card:hover {
+    transform: translateY(-6px);
+    border: 1px solid var(--primary-color);
+    box-shadow: 0 0 25px rgba(0, 255, 136, 0.25);
+}
 
-            .row {
-                flex-direction: column;
-                align-items: center;
-            }
+.card h5 {
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: 8px;
+}
 
-            .card {
-                width: 100%;
-                max-width: 350px;
-            }
+.card h2 {
+    color: var(--primary-color);
+    font-size: 2em;
+    font-weight: 700;
+    margin: 0;
+    text-shadow: 0 0 10px var(--primary-color);
+}
 
-            .dashboard-header h1 {
-                font-size: 1.8em;
-            }
-        }
-    </style>
+/* === 🔔 ALERT === */
+.alert {
+    background: rgba(0, 255, 136, 0.08);
+    border-left: 5px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 18px;
+    text-align: center;
+    border-radius: var(--radius);
+    margin-bottom: 40px;
+    font-weight: 500;
+    box-shadow: 0 0 12px rgba(0, 255, 136, 0.2);
+    animation: fadeIn 0.8s ease;
+}
 
+/* === 📋 TABELAS === */
+.card-header {
+    background: linear-gradient(90deg, #003321, #00ff88);
+    color: white;
+    padding: 14px;
+    border-radius: var(--radius) var(--radius) 0 0;
+    font-weight: 600;
+    text-align: left;
+    letter-spacing: 0.3px;
+    text-shadow: 0 0 8px var(--primary-color);
+}
+
+.card-body {
+    background: var(--card-bg);
+    border-radius: 0 0 var(--radius) var(--radius);
+    padding: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 0.95em;
+}
+
+table th,
+table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #1a1a1a;
+    text-align: center;
+}
+
+table th {
+    background-color: #0f0f0f;
+    color: var(--primary-color);
+    text-transform: uppercase;
+    font-size: 0.85em;
+    letter-spacing: 0.5px;
+}
+
+table tr:hover {
+    background-color: rgba(0, 255, 136, 0.05);
+    transition: 0.2s;
+}
+
+/* === ✨ ANIMAÇÕES === */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* === 📱 RESPONSIVO === */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 80px;
+    }
+
+    .sidebar.collapsed {
+        width: 0;
+    }
+
+    .container {
+        margin-left: 90px;
+    }
+
+    .row {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .card {
+        width: 100%;
+        max-width: 350px;
+    }
+
+    .dashboard-header h1 {
+        font-size: 1.8em;
+    }
+}
+</style>
 
 <body>
 
     <div class="container">
-        <nav class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <span class="logo">🏋️</span>
-                <span class="titulo">Academia</span>
-            </div>
+<nav class="sidebar" id="sidebar">
+    <!-- Cabeçalho da Sidebar -->
+    <div class="sidebar-header">
+        <span class="logo">🏋️</span>
+        <span class="titulo">Academia</span>
+    </div>
 
-            <ul class="menu">
-                <li><a href="dashboard.php"><span>🏠</span>
-                        <p>Dashboard</p>
-                    </a></li>
-                <li><a href="logout.php"><span>🚪</span>
-                        <p>Sair</p>
-                    </a></li>
+    <!-- Menu Principal -->
+    <ul class="menu">
+        <!-- Seção Dashboard -->
+        <li>
+            <a href="dashboard.php" class="active" aria-current="page">
+                <span>🏠</span>
+                <p>Dashboard</p>
+            </a>
+        </li>
 
-                <hr>
-                <h4>🏋️ Treino</h4>
-                <li><a href="treino.php"><span>➕</span>
-                        <p>Cadastrar</p>
-                    </a></li>
-                <li><a href="listar_treino.php"><span>📋</span>
-                        <p>Listar</p>
-                    </a></li>
+        <li>
+            <a href="logout.php">
+                <span>🚪</span>
+                <p>Sair</p>
+            </a>
+        </li>
 
-                <hr>
-                <h4>💪 Exercício</h4>
-                <li><a href="exercicio.php"><span>➕</span>
-                        <p>Cadastrar</p>
-                    </a></li>
-                <li><a href="listar_exercicios.php"><span>📋</span>
-                        <p>Listar</p>
-                    </a></li>
+        <hr>
 
-                <hr>
-                <h4>👤 Usuário</h4>
-                <li><a href="usuario.php"><span>➕</span>
-                        <p>Cadastrar</p>
-                    </a></li>
-                <li><a href="listar_usuario.php"><span>📋</span>
-                        <p>Listar</p>
-                    </a></li>
-            </ul>
+        <!-- Seção Treino -->
+        <h4>🏋️ Treino</h4>
+        <li>
+            <a href="treino.php">
+                <span>➕</span>
+                <p>Cadastrar</p>
+            </a>
+        </li>
+        <li>
+            <a href="listar_treino.php">
+                <span>📋</span>
+                <p>Listar</p>
+            </a>
+        </li>
 
-            <button class="toggle-btn" id="toggleSidebar" title="Expandir/Recolher menu">☰</button>
-        </nav>
+        <hr>
 
-        <script>
-            const toggle = document.getElementById('toggleSidebar');
-            const sidebar = document.getElementById('sidebar');
-            const titleTexts = sidebar.querySelectorAll('.menu p, .sidebar-header .titulo, .menu h4');
+        <!-- Seção Exercício -->
+        <h4>💪 Exercício</h4>
+        <li>
+            <a href="exercicio.php">
+                <span>➕</span>
+                <p>Cadastrar</p>
+            </a>
+        </li>
+        <li>
+            <a href="listar_exercicios.php">
+                <span>📋</span>
+                <p>Listar</p>
+            </a>
+        </li>
 
-            toggle.addEventListener('click', () => {
-                sidebar.classList.toggle('collapsed');
-                // Faz animação suave sumindo/aparecendo o texto
-                titleTexts.forEach(el => {
-                    if (sidebar.classList.contains('collapsed')) {
-                        el.style.opacity = "0";
-                        setTimeout(() => el.style.display = "none", 200);
-                    } else {
-                        el.style.display = "block";
-                        setTimeout(() => el.style.opacity = "1", 50);
-                    }
-                });
-            });
-        </script>
+        <hr>
 
-        <style>
-            :root {
-                --bg-color: #0f0f0f;
-                --primary-color: #00ff80;
-                --primary-light: #00ffaa;
-                --text-color: #e0e0e0;
-            }
+        <!-- Seção Usuário -->
+        <h4>👤 Usuário</h4>
+        <li>
+            <a href="usuario.php">
+                <span>➕</span>
+                <p>Cadastrar</p>
+            </a>
+        </li>
+        <li>
+            <a href="listar_usuario.php">
+                <span>📋</span>
+                <p>Listar</p>
+            </a>
+        </li>
+    </ul>
 
-            /* === MENU LATERAL === */
-            .sidebar {
-                width: 240px;
-                background: var(--bg-color);
-                box-shadow: 2px 0 15px rgba(0, 255, 136, 0.15);
-                position: fixed;
-                left: 0;
-                top: 0;
-                bottom: 0;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                transition: width 0.3s ease;
-                overflow: hidden;
-                z-index: 100;
-            }
+    <!-- Botão de recolher/expandir -->
+    <button class="toggle-btn" id="toggleSidebar" title="Expandir/Recolher menu">
+        ☰
+    </button>
+</nav>
 
-            .sidebar.collapsed {
-                width: 80px;
-            }
-
-            .sidebar-header {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 10px;
-                padding: 20px;
-                color: var(--primary-color);
-                font-weight: bold;
-                font-size: 1.3em;
-                text-shadow: 0 0 10px var(--primary-color);
-                white-space: nowrap;
-            }
-
-            .menu {
-                list-style: none;
-                padding: 0;
-                margin: 0;
-                flex: 1;
-            }
-
-            .menu li {
-                margin: 6px 0;
-            }
-
-            .menu a {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                padding: 10px 20px;
-                text-decoration: none;
-                color: var(--text-color);
-                border-radius: 8px;
-                transition: all 0.3s ease;
-            }
-
-            .menu a:hover {
-                background: rgba(0, 255, 136, 0.1);
-                color: var(--primary-color);
-                box-shadow: 0 0 8px rgba(0, 255, 136, 0.3);
-                transform: translateX(4px);
-            }
-
-            .menu span {
-                font-size: 1.2em;
-            }
-
-            .menu p {
-                margin: 0;
-                font-weight: 500;
-                transition: opacity 0.3s ease;
-            }
-
-            .menu h4 {
-                color: var(--primary-color);
-                text-align: center;
-                margin: 10px 0;
-                font-size: 0.9em;
-                text-shadow: 0 0 5px var(--primary-light);
-                transition: opacity 0.3s ease;
-            }
-
-            hr {
-                border: none;
-                height: 1px;
-                background: rgba(0, 255, 136, 0.2);
-                margin: 10px 15px;
-            }
-
-            /* === Botão de colapsar === */
-            .toggle-btn {
-                background: var(--primary-color);
-                color: #000;
-                border: none;
-                cursor: pointer;
-                padding: 12px 0;
-                font-size: 1.3em;
-                font-weight: bold;
-                transition: all 0.3s ease;
-            }
-
-            .toggle-btn:hover {
-                background: var(--primary-light);
-                box-shadow: 0 0 10px var(--primary-color);
-            }
-
-            /* === Layout principal === */
-            .container {
-                margin-left: 260px;
-                padding: 20px;
-                transition: margin-left 0.3s ease;
-            }
-
-            .sidebar.collapsed+.container {
-                margin-left: 100px;
-            }
-        </style>
 
 
 
@@ -633,6 +692,71 @@ $usuarionmtreino = mysqli_fetch_assoc($resultadonmtreino);
             </div>
         </div>
     </div>
+<script>
+    const toggle = document.getElementById('toggleSidebar');
+    const sidebar = document.getElementById('sidebar');
+    const menuTexts = sidebar.querySelectorAll('.menu p, .menu h4, .sidebar-header .titulo');
+
+    // 🔄 Restaura estado salvo (aberto ou recolhido)
+    const savedState = localStorage.getItem('sidebar-collapsed');
+    if (savedState === 'true') {
+        sidebar.classList.add('collapsed');
+        hideMenuText();
+    }
+
+    // 🎛 Alterna menu
+    toggle.addEventListener('click', () => {
+        const isCollapsed = sidebar.classList.toggle('collapsed');
+        if (isCollapsed) hideMenuText();
+        else showMenuText();
+        localStorage.setItem('sidebar-collapsed', isCollapsed);
+    });
+
+    // 🔥 Função: esconde textos com animação
+    function hideMenuText() {
+        menuTexts.forEach(el => {
+            el.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            el.style.opacity = '0';
+            el.style.transform = 'translateX(-15px)';
+            setTimeout(() => (el.style.display = 'none'), 250);
+        });
+    }
+
+    // ✨ Função: mostra textos suavemente
+    function showMenuText() {
+        menuTexts.forEach(el => {
+            el.style.display = 'block';
+            setTimeout(() => {
+                el.style.opacity = '1';
+                el.style.transform = 'translateX(0)';
+            }, 50);
+        });
+    }
+
+    // 💬 Tooltips automáticos ao recolher
+    sidebar.querySelectorAll('.menu a').forEach(link => {
+        const text = link.querySelector('p')?.textContent || '';
+        link.setAttribute('data-tooltip', text);
+    });
+
+    // Mostra tooltip apenas se recolhido
+    sidebar.addEventListener('mouseover', e => {
+        if (!sidebar.classList.contains('collapsed')) return;
+        const link = e.target.closest('.menu a');
+        if (!link || !link.dataset.tooltip) return;
+
+        const tooltip = document.createElement('div');
+        tooltip.className = 'sidebar-tooltip';
+        tooltip.textContent = link.dataset.tooltip;
+        document.body.appendChild(tooltip);
+
+        const rect = link.getBoundingClientRect();
+        tooltip.style.left = rect.right + 10 + 'px';
+        tooltip.style.top = rect.top + 'px';
+
+        link.addEventListener('mouseleave', () => tooltip.remove(), { once: true });
+    });
+</script>
 
 
 </body>
