@@ -7,60 +7,75 @@ if (isset($_GET['id'])) {
 
     require_once "conexao.php";
 
-    $sql = "SELECT * FROM exercicio WHERE id_exercicio = ?";
+    $sql = "SELECT * FROM usuario WHERE id_usuario = ?";
     $comando = mysqli_prepare($conexao, $sql);
     mysqli_stmt_bind_param($comando, 'i', $id);
     mysqli_stmt_execute($comando);
     $resultados = mysqli_stmt_get_result($comando);
 
-    $exercicio = mysqli_fetch_assoc($resultados);
+    $usuario = mysqli_fetch_assoc($resultados);
 
-    $nome = $exercicio['nome_exercicio'];
-    $series = $exercicio['series'];
-    $repeticoes = $exercicio['repeticoes'];
-    $carga = $exercicio['carga'];
+    $nome = $usuario['nome'];
+    $email = $usuario['email'];
+    $senha = $usuario['senha'];
+    $idade = $usuario['idade'];
 } else {
     // --- Modo Cadastrar ---
     $id = 0;
     $nome = "";
-    $series = "";
-    $repeticoes = "";
-    $carga = "";
+    $email = "";
+    $senha = "";
+    $idade = "";
 }
 
 
-// === Cadastrar ou atualizar exercício ===
+// === Cadastrar ou atualizar usuarios ===
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $nome = $_POST["nome"];
-    $series = $_POST["series"];
-    $repeticoes = $_POST["repeticoes"];
-    $carga = $_POST["carga"];
+    $email = $_POST["email"];
+    $senha = $_POST["senha"];
+    $idade = $_POST["idade"];
+
+
 
     if ($id == 0) {
+        // === Calcula a idade a partir da data de nascimento ===
+        $hoje = new DateTime(); // data atual
+        $nascimento = new DateTime($idade);
+        $idade = $nascimento->diff($hoje)->y; // diferença em anos
+        // === Define o tipo de aluno automaticamente ===
+        if ($idade < 25) {
+            $tipo = "Novato";
+            $treino_id = 1; // Treino para iniciantes
+        } else {
+            $tipo = "Veterano";
+            $treino_id = 2; // Treino para experientes
+        }
+
         // Inserir novo
-        $sql = "INSERT INTO exercicio (nome_exercicio, series, repeticoes, carga) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO usuario (nome, email, senha, idade) VALUES (?, ?, ?, ?)";
         $comando = mysqli_prepare($conexao, $sql);
-        mysqli_stmt_bind_param($comando, "siid", $nome, $series, $repeticoes, $carga);
+        mysqli_stmt_bind_param($comando, "sssi", $nome, $email, $senha, $idade);
         $executado = mysqli_stmt_execute($comando);
 
         if ($executado) {
-            $mensagem = "<div class='message success'>✅ Exercício cadastrado com sucesso!</div>";
-            header("Location: listar_exercicios.php");
+            $mensagem = "<div class='message success'>✅ Usuario cadastrado com sucesso!</div>";
+            header("Location: listar_usuario.php");
         } else {
-            $mensagem = "<div class='message error'>❌ Erro ao cadastrar exercício.</div>";
+            $mensagem = "<div class='message error'>❌ Erro ao cadastrar Usuario.</div>";
         }
     } else {
         // Atualizar existente
-        $sql = "UPDATE exercicio SET nome_exercicio = ?, series = ?, repeticoes = ?, carga = ? WHERE id_exercicio = ?";
+        $sql = "UPDATE usuario SET nome = ?, email = ?, senha = ?, idade = ? WHERE id_usuario = ?";
         $comando = mysqli_prepare($conexao, $sql);
-        mysqli_stmt_bind_param($comando, "siidi", $nome, $series, $repeticoes, $carga, $id);
+        mysqli_stmt_bind_param($comando, "sssii", $nome, $email, $senha, $idade, $id);
         $executado = mysqli_stmt_execute($comando);
 
         if ($executado) {
-            $mensagem = "<div class='message success'>✅ Exercício atualizado com sucesso!</div>";
-            header("Location: listar_exercicios.php");
+            $mensagem = "<div class='message success'>✅ Usuario atualizado com sucesso!</div>";
+            header("Location: listar_usuario.php");
         } else {
-            $mensagem = "<div class='message error'>❌ Erro ao atualizar exercício.</div>";
+            $mensagem = "<div class='message error'>❌ Erro ao atualizar usuario.</div>";
         }
     }
 }
@@ -74,8 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <meta charset="UTF-8">
     <title>Cadastro de Aluno</title>
     <style>
-        /* === Tema Neon Academia - Exercício === */
-body {
+        body {
     font-family: Arial, sans-serif;
     background-color: #111;
     color: #0f0;
@@ -182,28 +196,36 @@ button.voltar:hover {
 a{
     text-decoration: none;
 }
+
     </style>
 </head>
 
 <body>
     <form method="POST" action="">
-        <h2>Cadastro de Exercicios</h2>
-        <label>Nome Exercicios</label><br>
+        <h2>Cadastro de Usuario</h2>
+        <label>Nome Usuario</label><br>
         <input type="text" name="nome" value="<?php echo $nome ?>" required><br><br>
 
-        <label>Series:</label><br>
-        <input placeholder="Insira no max. 2 números" type="number" name="series" value="<?php echo $series ?>" required><br><br>
+        <label>Email:</label><br>
+        <input type="email" name="email" value="<?php echo $email ?>" required><br><br>
 
-        <label>Repetições:</label><br>
-        <input placeholder="Insira no max. 2 números" type="number" name="repeticoes" value="<?php echo $repeticoes ?>" required><br><br>
+        <label>senha:</label><br>
+        <input type="password" name="senha" value="<?php echo $senha ?>" onclick="this.type = this.type === 'password' ? 'text' : 'password'" required><br><br>
 
-        <label>Carga:</label><br>
-        <input type="number" name="carga" value="<?php echo $carga ?>" required><br><br>
+        <label>Idade:</label><br>
+        <?php
+        if ($idade === "") {
+            echo '
+            <input type="date" name="idade" value="<?php echo $idade ?>"required><br><br>';
+        } else {
+            echo '<input type="number" name="idade" value="' . htmlspecialchars($idade) . '" required><br><br>';
+        }
+        ?>
 
         <button type="submit">Cadastrar</button>
         <button><a href="dashboard.php">Voltar</a></button>
-    </form>
 
+    </form>
 
 </body>
 

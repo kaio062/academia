@@ -9,7 +9,7 @@ if (!isset($_SESSION["admin"])) {
 }
 
 // Consulta todos os exercícios
-$sql = "SELECT * FROM exercicio ORDER BY id_exercicio DESC";
+$sql = "SELECT * FROM usuario ORDER BY id_usuario DESC";
 $comando = mysqli_prepare($conexao, $sql);
 mysqli_stmt_execute($comando);
 $resultados = mysqli_stmt_get_result($comando);
@@ -20,7 +20,7 @@ $resultados = mysqli_stmt_get_result($comando);
 
 <head>
     <meta charset="UTF-8">
-    <title>Listar Exercícios</title>
+    <title>Listar Usuarios</title>
     <style>
         :root {
             --neon-green-light: #39ff14;
@@ -94,8 +94,6 @@ $resultados = mysqli_stmt_get_result($comando);
             transform: translateY(-2px);
         }
 
-
-
         .novo {
             display: inline-block;
             margin-bottom: 20px;
@@ -118,33 +116,35 @@ $resultados = mysqli_stmt_get_result($comando);
 
 <body>
 
-    <h2>Lista de Exercícios</h2>
+    <h2>Lista de Alunos</h2>
 
-    <a href="exercicio.php" class="novo">+ Novo Exercício</a>
+    <a href="usuario.php" class="novo">+ Novo Aluno</a>
 
     <table>
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Nome do Exercício</th>
-                <th>Séries</th>
-                <th>Repetições</th>
-                <th>Carga (kg)</th>
-                <th>Ações</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Senha</th>
+                <th>Idade</th>
+
+
+                <th>Ação</th>
             </tr>
         </thead>
         <?php
         echo '<tbody>';
-        while ($exercicio = mysqli_fetch_assoc($resultados)) {
+        while ($usuario = mysqli_fetch_assoc($resultados)) {
             echo '<tr>';
-            echo '<td>' . $exercicio['id_exercicio'] . '</td>';
-            echo '<td>' . htmlspecialchars($exercicio['nome_exercicio']) . '</td>';
-            echo '<td>' . $exercicio['series'] . '</td>';
-            echo '<td>' . $exercicio['repeticoes'] . '</td>';
-            echo '<td>' . number_format($exercicio['carga'], 2, ',', '.') . '</td>';
+            echo '<td>' . $usuario['id_usuario'] . '</td>';
+            echo '<td>' . htmlspecialchars($usuario['nome']) . '</td>';
+            echo '<td>' . $usuario['email'] . '</td>';
+            echo '<td>' . $usuario['senha'] . '</td>';
+            echo '<td>' . $usuario['idade'] . '</td>';
             echo '<td>';
-            echo '<a href="exercicio.php?id=' . $exercicio['id_exercicio'] . '" class="botao">Editar</a> ';
-            echo '<a href="excluir_exercicio.php?id=' . $exercicio['id_exercicio'] . '" class="botao excluir" onclick="return confirm(\'Deseja realmente excluir este exercício?\')">Excluir</a>';
+            echo '<a href="usuario.php?id=' . $usuario['id_usuario'] . '" class="botao">Editar</a> ';
+            echo '<a href="excluir_usuario.php?id=' . $usuario['id_usuario'] . '" class="botao excluir" onclick="return confirm(\'Deseja realmente excluir este usuário?\')">Excluir</a>';
             echo '</td>';
             echo '</tr>';
         }

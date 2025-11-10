@@ -93,13 +93,13 @@ CREATE TABLE IF NOT EXISTS `academia`.`usuario_treino` (
   CONSTRAINT `fk_usuarios_has_treino_treino1`
     FOREIGN KEY (`treino_id_treino`)
     REFERENCES `academia`.`treino` (`id_treino`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_usuarios_has_treino_usuarios1`
     FOREIGN KEY (`usuario_id_usuario`)
     REFERENCES `academia`.`usuario` (`id_usuario`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 

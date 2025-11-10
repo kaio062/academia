@@ -337,7 +337,7 @@ $usuarionmtreino = mysqli_fetch_assoc($resultadonmtreino);
 
                 <hr>
                 <h4>🏋️ Treino</h4>
-                <li><a href="cadastro_treino.php"><span>➕</span>
+                <li><a href="treino.php"><span>➕</span>
                         <p>Cadastrar</p>
                     </a></li>
                 <li><a href="listar_treino.php"><span>📋</span>
@@ -346,7 +346,7 @@ $usuarionmtreino = mysqli_fetch_assoc($resultadonmtreino);
 
                 <hr>
                 <h4>💪 Exercício</h4>
-                <li><a href="cadastra_exercicio.php"><span>➕</span>
+                <li><a href="exercicio.php"><span>➕</span>
                         <p>Cadastrar</p>
                     </a></li>
                 <li><a href="listar_exercicios.php"><span>📋</span>
@@ -355,7 +355,7 @@ $usuarionmtreino = mysqli_fetch_assoc($resultadonmtreino);
 
                 <hr>
                 <h4>👤 Usuário</h4>
-                <li><a href="cadastrar.php"><span>➕</span>
+                <li><a href="usuario.php"><span>➕</span>
                         <p>Cadastrar</p>
                     </a></li>
                 <li><a href="listar_usuario.php"><span>📋</span>
